@@ -25,7 +25,6 @@ public class ExpDetailsDAO
     private double ytdProjectedBalane = 0.0;
     private double ytdCurrentBalance = 0.0;
     private int transactionID = 0;
-    private boolean isNew;
 
     public boolean loadTransactionsDBNew(File f)
     {
