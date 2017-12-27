@@ -22,6 +22,7 @@ public class ExpDetailsGUI extends JFrame implements ActionListener {
     private ArrayList tranList = new ArrayList();
     private ArrayList budgetList = new ArrayList();
     private ExpDetailsDAO expDetailsDAO = new ExpDetailsDAO();
+    private ExpTransactionTemplateDAO expTemplateDAO = new ExpTransactionTemplateDAO();
     private JScrollPane scrollPane;
     private JTabbedPane tabbedPane = new JTabbedPane();
     private JTable dataTable;
@@ -562,7 +563,7 @@ public class ExpDetailsGUI extends JFrame implements ActionListener {
 
         addRecurring.addActionListener(this);
         transactions.add(addRecurring);
-
+        
         transactions.addSeparator();
 
         exportAsCsv.addActionListener(this);
@@ -964,6 +965,11 @@ public class ExpDetailsGUI extends JFrame implements ActionListener {
     public ArrayList getCategoryList()
     {
         return expDetailsDAO.getCategoryList();
+    }
+    
+    public ArrayList<ExpTransactionTemplate> getTemplates()
+    {
+    		return expTemplateDAO.getTemplates();
     }
 
     public String getCurrentMonth() {

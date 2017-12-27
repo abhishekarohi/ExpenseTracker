@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.toedter.calendar.JDateChooser;
 
+import Data.ExpTransactionTemplate;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -23,7 +25,7 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
     private JLabel eDateLabel = new JLabel("Expense Date");
     private JLabel eStatusLabel = new JLabel("Expense Status");
     private JLabel eCategoryLabel = new JLabel("Category");
-
+    private JLabel tTemplateLabel = new JLabel("Template");
     //Create the input fields for the screen
     private JTextField eDescText = new JTextField();
     private JTextField ePlannedAmountText = new JTextField();
@@ -32,6 +34,7 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
     private JComboBox eStatusText = new JComboBox();
     private JDateChooser dateChooser = new JDateChooser();
     private JComboBox eCategory = new JComboBox();
+    private JComboBox tTemplate = new JComboBox();
     private JButton eSave = new JButton("Save");
     private JButton eCancel = new JButton("Cancel");
     private ButtonGroup bg = new ButtonGroup();
@@ -106,6 +109,7 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
         eActualAmountLabel.setFont(boldFont);
         eStatusLabel.setFont(boldFont);
         eCategoryLabel.setFont(boldFont);
+        tTemplateLabel.setFont(boldFont);
 
         if (action.equals("Complete"))
         {
@@ -124,19 +128,43 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
 
 
         //Create a panel for putting all the data on screen
+        JPanel tempPanel = new JPanel();
         JPanel tranPanel = new JPanel();
         JPanel tranPanel1 = new JPanel();
         JPanel buttonPanel = new JPanel();
         JPanel freqButtonPanel = new JPanel();
         JPanel addMorePanel = new JPanel();
 
+        tempPanel.setLayout(new GridBagLayout());
         tranPanel.setLayout(new GridBagLayout());
         tranPanel1.setLayout(new GridBagLayout());
         buttonPanel.setLayout(new GridBagLayout());
         freqButtonPanel.setBorder(BorderFactory.createEtchedBorder());
 
         GridBagConstraints c = new GridBagConstraints();
+        
+        if (action.toUpperCase().contains("ADD"))
+        {
+        		
+        		tTemplate.setActionCommand("Template");
+        		c.gridx = 0;
+            c.gridy = 0;
+            c.ipadx = 200;
+            c.anchor = GridBagConstraints.FIRST_LINE_START;
+            tempPanel.add(tTemplateLabel,c);
 
+            tTemplate.addItem("<Select Template>");
+            for (int i = 0; i < parent.getTemplates().size(); i++)
+            		tTemplate.addItem(parent.getTemplates().get(i).getTemplateItem());
+            
+            c.gridx = 0;
+            c.gridy = 1;
+            c.anchor = GridBagConstraints.LINE_START;
+            tempPanel.add(tTemplate,c);
+            
+            tTemplate.addActionListener(this);
+        }
+        
         //Add the description label and text field
         c.gridx = 0;
         c.gridy = 0;
@@ -249,32 +277,41 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
         addMorePanel.add(addMore);
 
         //Set the default properties of the frame and add the panel
+        if (action.toUpperCase().contains("ADD"))
+        {
+        		c.gridx = 0;
+            c.gridy = 0;
+            c.ipadx = 0;
+            c.anchor = GridBagConstraints.FIRST_LINE_START;
+            add(tempPanel,c);
+       }
+        
         c.gridx = 0;
-        c.gridy = 0;
+        c.gridy = 1;
         c.ipadx = 0;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         add(tranPanel1,c);
 
         c.gridx = 0;
-        c.gridy = 1;
+        c.gridy = 2;
         c.anchor = GridBagConstraints.LINE_START;
         add(tranPanel,c);
 
         if (action.equals("Add Recurring"))
         {
             c.gridx = 0;
-            c.gridy = 5;
+            c.gridy = 6;
             add(freqButtonPanel,c);
         }
 
         c.gridx = 0;
-        c.gridy = 6;
+        c.gridy = 7;
         c.anchor = GridBagConstraints.CENTER;
         add(buttonPanel,c);
 
         if (action.equals("Add New"))
         {
-            c.gridy = 7;
+            c.gridy = 8;
             add(addMorePanel,c);
         }
 
@@ -486,6 +523,15 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
             dispose();
         }
     }
+    
+    public void copyFromTemplate()
+    {
+    		int index = tTemplate.getSelectedIndex();
+		ExpTransactionTemplate t = parent.getTemplates().get(index-1);
+		eDescText.setText(t.getTemplateItem());
+		ePlannedAmountText.setText(t.getTemplateAmount());
+		eCategory.setSelectedItem(t.getTemplateCategory());
+    }
 
     public void actionPerformed(ActionEvent e) {
             if(e.getActionCommand().equals("Cancel"))
@@ -493,6 +539,10 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
                 userAction = false;
                 parent.addNewTransactions(false);
                 dispose();
+            }
+            else if (e.getActionCommand().equals("Template"))
+            {
+            		copyFromTemplate();
             }
             else if (e.getActionCommand().equals("Save"))
             {
@@ -502,6 +552,7 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
                     JOptionPane.showMessageDialog(this,errMSG);
 
             }
+            
 
         }
     }

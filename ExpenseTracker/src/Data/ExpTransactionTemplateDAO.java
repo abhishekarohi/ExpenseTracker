@@ -4,22 +4,21 @@ package Data;
 import java.util.*;
 import java.io.*;
 
-
-
 public class ExpTransactionTemplateDAO 
 {
-	private ArrayList<ExpTransactionTemplate> templateTransactions;
+	private ArrayList<ExpTransactionTemplate> transactionTemplates;
+	private boolean templatesExist;
 	
 	public ExpTransactionTemplateDAO ()
 	{
-		templateTransactions = new ArrayList();
+		transactionTemplates = new ArrayList();
+		templatesExist = false;
+		loadtemplates();
 	}
-	
 	
 	public void loadtemplates()
 	{
 		File templateFile = new File("TransactionTemplates.dat");
-		
 		
 		try 
 		{
@@ -30,7 +29,8 @@ public class ExpTransactionTemplateDAO
 				if (templateFile.length() > 0)
 				{
 					ObjectInputStream inStream = new ObjectInputStream(new FileInputStream("TransactionTemplates.dat"));
-					templateTransactions = (ArrayList<ExpTransactionTemplate> ) inStream.readObject();
+					transactionTemplates = (ArrayList<ExpTransactionTemplate> ) inStream.readObject();
+					templatesExist = true;
 				}
 				
 			}
@@ -51,7 +51,7 @@ public class ExpTransactionTemplateDAO
 		try 
 		{
 			ObjectOutputStream outStream = new ObjectOutputStream(new FileOutputStream("TransactionTemplates.dat"));
-			outStream.writeObject(templateTransactions);
+			outStream.writeObject(transactionTemplates);
 			outStream.close();
 		} 
 		catch (IOException e) 
@@ -62,12 +62,17 @@ public class ExpTransactionTemplateDAO
 	
 	public void addToTemplates(ExpTransactionTemplate t)
 	{
-		templateTransactions.add(t);
+		transactionTemplates.add(t);
+		templatesExist = true;
 	}
 	
 	public ArrayList<ExpTransactionTemplate> getTemplates()
 	{
-		return templateTransactions;
+		return transactionTemplates;
 	}
 	
+	public boolean checkTemplatesExist()
+	{
+		return templatesExist;
+	}
 }
