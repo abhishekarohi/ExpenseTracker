@@ -516,13 +516,13 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
     			
     			if (n == JOptionPane.YES_OPTION)
     			{
-    				parent.addToTemplatesDAO(eDescText.getText(),ePlannedAmountText.getText(),eCategory.getSelectedItem().toString());
+    				parent.addToTemplatesDAO(eDescText.getText(),templateAmount,eCategory.getSelectedItem().toString());
     			}
     			
     		}
     		else
     		{
-    			ExpTransactionTemplate t = parent.getTemplates().get(index);
+    			ExpTransactionTemplate t = parent.getTemplates().get(index-1);
     			if (!t.getTemplateAmount().equals(templateAmount) ||
     				!t.getTemplateCategory().equals(eCategory.getSelectedItem().toString()))
     			{
