@@ -13,10 +13,10 @@ import com.google.gson.*;
  */
 public class ExpDetailsDAO
 {
-    private ArrayList transactionsData = new ArrayList();
-    private ArrayList categoryList = new ArrayList();
-    private ArrayList itemList = new ArrayList();
-    private ArrayList budgetList = new ArrayList();
+    private ArrayList<ExpSingleTransaction> transactionsData = new ArrayList<ExpSingleTransaction>();
+    private ArrayList<String> categoryList = new ArrayList<String>();
+    private ArrayList<String> itemList = new ArrayList<String>();
+    private ArrayList<ExpCategory> budgetList = new ArrayList<ExpCategory>();
     private JsonObject catExpenseSummationPlanned;
     private JsonObject catExpenseSummationActual;
     private JsonObject balanceComparision = new JsonObject();
@@ -111,7 +111,7 @@ public class ExpDetailsDAO
         }
     }
 
-    public void addMultipleTransaction (ArrayList trans)
+    public void addMultipleTransaction (ArrayList<JsonObject> trans)
     {
         for (int i = 0; i < trans.size(); i++)
             addNewTransaction((JsonObject) trans.get(i));
@@ -291,13 +291,13 @@ public class ExpDetailsDAO
         return o;
     }
 
-    public ArrayList returnTransactions() {
+    public ArrayList<ExpSingleTransaction> returnTransactions() {
         return transactionsData;
     }
 
-    public ArrayList filterTransactions(String month,String category,String item)
+    public ArrayList<ExpSingleTransaction> filterTransactions(String month,String category,String item)
     {
-        ArrayList monthTransactions = new ArrayList();
+        ArrayList<ExpSingleTransaction> monthTransactions = new ArrayList<ExpSingleTransaction>();
         if (month.equals("All") && category.equals("All") && item.equals("All"))
             monthTransactions = transactionsData;
         else
@@ -315,12 +315,12 @@ public class ExpDetailsDAO
         return monthTransactions;
     }
 
-    public ArrayList getCategoryList()
+    public ArrayList<String> getCategoryList()
     {
         return categoryList;
     }
 
-    public ArrayList getItemList() {return itemList;}
+    public ArrayList<String> getItemList() {return itemList;}
 
     public void addToCategory(String cat, String item)
     {
@@ -685,7 +685,7 @@ public class ExpDetailsDAO
         return ytdCurrentBalance;
     }
 
-    public ArrayList getBudgetList()
+    public ArrayList<ExpCategory> getBudgetList()
     {
         return budgetList;
     }

@@ -54,7 +54,7 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
 
     private JsonObject tranData;
     private JsonObject oldTransaction;
-    private ArrayList multiTrans = new ArrayList();
+    private ArrayList<JsonObject> multiTrans = new ArrayList<JsonObject>();
     private String mode;
     private ExpDetailsGUI parent;
     private boolean userAction = false;

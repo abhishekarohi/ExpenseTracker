@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class ExpCategory implements ChangeListener, ActionListener{
     private JSlider slider;
-    private JComboBox category;
+    private JComboBox<String> category;
     private JLabel budgetCategory;
     private JButton delButton;
     private JLabel bAmount;
@@ -38,7 +38,7 @@ public class ExpCategory implements ChangeListener, ActionListener{
         slider.addChangeListener(this);
         slider.setPreferredSize(new Dimension(200, 50));
 
-        category = new JComboBox();
+        category = new JComboBox<String>();
         category.setPreferredSize(new Dimension(150,20));
 
         bAmount = new JLabel("$50");
@@ -101,7 +101,7 @@ public class ExpCategory implements ChangeListener, ActionListener{
         return panel;
     }
 
-    public void setCategory(ArrayList c)
+    public void setCategory(ArrayList<String> c)
     {
         category.addItem("");
         for (int i = 0; i < c.size(); i++)
