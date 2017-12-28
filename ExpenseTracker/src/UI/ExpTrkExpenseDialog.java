@@ -446,9 +446,27 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
         return userAction;
     }
 
+    public void verifyTemplateSave()
+    {
+    		if (!eDescText.getText().equals(tTemplate.getSelectedItem().toString()))
+    		{
+    			int n = JOptionPane.showConfirmDialog(
+    				    this,
+    				    "Would you like save this transaction to templates?",
+    				    "Template Save",
+    				    JOptionPane.YES_NO_OPTION);
+    			
+    			if (n == JOptionPane.YES_OPTION)
+    			{
+    				parent.addToTemplatesDAO(eDescText.getText(),ePlannedAmountText.getText(),eCategory.getSelectedItem().toString());
+    			}
+    			
+    		}
+    }
     public void performActions()
     {
-        setVisible(false);
+    		verifyTemplateSave();
+    		setVisible(false);
         if (mode.equals("Add New") || mode.equals("Add Recurring"))
         {
             Date date = dateChooser.getDate();
@@ -457,7 +475,7 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
             {
                 createTransactionData(date);
                 parent.addNewTransactions(false);
-
+                
                 if (addMore.isSelected())
                 {
                     resetAllFields();
@@ -527,10 +545,18 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
     public void copyFromTemplate()
     {
     		int index = tTemplate.getSelectedIndex();
-		ExpTransactionTemplate t = parent.getTemplates().get(index-1);
-		eDescText.setText(t.getTemplateItem());
-		ePlannedAmountText.setText(t.getTemplateAmount());
-		eCategory.setSelectedItem(t.getTemplateCategory());
+    		if (index > 0)
+    		{
+    			ExpTransactionTemplate t = parent.getTemplates().get(index-1);
+    			eDescText.setText(t.getTemplateItem());
+    			ePlannedAmountText.setText(t.getTemplateAmount());
+    			eCategory.setSelectedItem(t.getTemplateCategory());
+    		}
+    		else
+    		{
+    			resetAllFields();
+    		}
+		
     }
 
     public void actionPerformed(ActionEvent e) {

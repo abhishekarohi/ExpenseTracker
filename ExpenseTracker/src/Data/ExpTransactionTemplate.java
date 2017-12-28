@@ -46,4 +46,13 @@ public class ExpTransactionTemplate implements Serializable
 	    {
 	    		return this.templateCategory;
 	    }
+	    
+	    public boolean isGreaterThan(ExpTransactionTemplate t)
+	    {
+	    		
+	    		if (this.templateItem.compareToIgnoreCase(t.templateItem) > 0)
+	    			return true;
+	    		else
+	    			return false;
+	    }
 }

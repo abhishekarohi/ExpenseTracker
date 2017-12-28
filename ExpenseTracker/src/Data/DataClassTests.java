@@ -14,7 +14,7 @@ public class DataClassTests {
 		{
 			Integer id = new Integer(i);
 			t = new ExpTransactionTemplate(i,new String("item"+id.toString()), new String("amount"+id.toString()), new String("category"+id.toString()));
-			temp.addToTemplates(t);
+			//temp.addToTemplates(t);
 		}
 		temp.saveTemplates();
 		temp.loadtemplates();
