@@ -44,10 +44,21 @@ public class ExpDetailsGUI extends JFrame implements ActionListener {
     private JMenuItem saveAstrans = new JMenuItem("Save As");
     private JMenuItem saveandexit = new JMenuItem("Save & Exit");
     private JMenuItem exit = new JMenuItem("Exit");
-
-    private JMenu transactions = new JMenu("Transactions");
+    
+  //Popup Menu Items
+    private JPopupMenu popupMenu;
+    private JMenuItem complete = new JMenuItem("Complete");
+    private JMenuItem comp_with_diff = new JMenuItem("Complete With Diff");
+    private JMenuItem copyToNew = new JMenuItem("Copy to New");
+    private JMenuItem modTrans = new JMenuItem("Modify");
+    private JMenuItem delTrans = new JMenuItem("Delete");
+    private JMenuItem reSeqTransactions = new JMenuItem("Re-Sequence Trans");
     private JMenuItem Add = new JMenuItem("Add New");
     private JMenuItem addRecurring = new JMenuItem("Add Recurring");
+
+    private JMenu transactions = new JMenu("Transactions");
+    private JMenuItem Add1 = new JMenuItem("Add New");
+    private JMenuItem addRecurring1 = new JMenuItem("Add Recurring");
 
     private JMenuItem sortByDate = new JMenuItem("Sort By Date");
     private JRadioButton sortByDateButton = new JRadioButton("Date");
@@ -60,14 +71,6 @@ public class ExpDetailsGUI extends JFrame implements ActionListener {
 
     private JMenuItem exportAsCsv = new JMenuItem("Export As CSV");
 
-    //Popup Menu Items
-    private JPopupMenu popupMenu;
-    private JMenuItem complete = new JMenuItem("Complete");
-    private JMenuItem comp_with_diff = new JMenuItem("Complete With Diff");
-    private JMenuItem copyToNew = new JMenuItem("Copy to New");
-    private JMenuItem modTrans = new JMenuItem("Modify");
-    private JMenuItem delTrans = new JMenuItem("Delete");
-    private JMenuItem reSeqTransactions = new JMenuItem("Re-Sequence Trans");
 
     //Drop downs
     private JComboBox detailsMonths = new JComboBox();
@@ -558,14 +561,14 @@ public class ExpDetailsGUI extends JFrame implements ActionListener {
         exit.addActionListener(this);
         file.add(exit);
 
-        Add.addActionListener(this);
-        transactions.add(Add);
-
-        addRecurring.addActionListener(this);
-        transactions.add(addRecurring);
+        Add1.addActionListener(this);
+        transactions.add(Add1);
+        
+        addRecurring1.addActionListener(this);
+        transactions.add(addRecurring1);
         
         transactions.addSeparator();
-
+        
         exportAsCsv.addActionListener(this);
         transactions.add(exportAsCsv);
 
@@ -592,6 +595,15 @@ public class ExpDetailsGUI extends JFrame implements ActionListener {
     {
         //Create the transactions menu and its items
         JPopupMenu tranPopmenu = new JPopupMenu();
+        
+        Add.addActionListener(this);
+        tranPopmenu.add(Add);
+        
+        addRecurring.addActionListener(this);
+        tranPopmenu.add(addRecurring);
+        
+        tranPopmenu.addSeparator();
+        
         complete.addActionListener(this);
         tranPopmenu.add(complete);
 
@@ -904,6 +916,9 @@ public class ExpDetailsGUI extends JFrame implements ActionListener {
                 expDetailsDAO.saveAllTransactionsToDBNew(f);
                 changeExists = false;
             }
+            
+            //Save the templates
+            expTemplateDAO.saveTemplates();
 
             if (saveType.equals("Save & Exit") && !changeExists)
                 System.exit(0);
@@ -972,6 +987,10 @@ public class ExpDetailsGUI extends JFrame implements ActionListener {
     		return expTemplateDAO.getTemplates();
     }
 
+    public void addToTemplatesDAO(String item, String amount, String category)
+    {
+    		expTemplateDAO.addToTemplates(item,amount,category);
+    }
     public String getCurrentMonth() {
 
         String tDate;

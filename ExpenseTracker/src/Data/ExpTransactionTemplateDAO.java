@@ -60,9 +60,13 @@ public class ExpTransactionTemplateDAO
 		}
 	}
 	
-	public void addToTemplates(ExpTransactionTemplate t)
+	public void addToTemplates(String i, String amt, String cat)
 	{
+		ExpTransactionTemplate t = new ExpTransactionTemplate
+										(transactionTemplates.size() + 1,
+										i,amt,cat);
 		transactionTemplates.add(t);
+		sortdata();
 		templatesExist = true;
 	}
 	
@@ -75,4 +79,50 @@ public class ExpTransactionTemplateDAO
 	{
 		return templatesExist;
 	}
+	
+	public void sortdata()
+    {
+        ExpTransactionTemplate [] trans = new ExpTransactionTemplate[transactionTemplates.size()];
+        boolean posFound = false;
+        int position = 0;
+
+        for (int x = 0; x < transactionTemplates.size();x++)
+        {
+        		ExpTransactionTemplate o = transactionTemplates.get(x);
+
+            if (x == 0)
+                trans[x] = o;
+            else
+            {
+                //Put logic to compare objects and replace spaces.
+                for (int y = 0; y < x; y++)
+                {
+                    if (!o.isGreaterThan(trans[y]))
+                    {
+                        for(int z = x ; z >= y ;z--)
+                        {
+                            if (z > 0)
+                                trans[z] = trans[z-1];
+                        }
+
+                        trans[y] = o;
+                        posFound = true;
+                        break;
+                    }
+                    position = y + 1;
+
+                }
+
+                if (!posFound)
+                    trans[position] = o;
+
+                posFound = false;
+
+            }
+
+        }
+        transactionTemplates.clear();
+        for (int i = 0; i < trans.length; i++)
+        		transactionTemplates.add(trans[i]);
+    }
 }
