@@ -456,6 +456,7 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
 
         return true;
     }
+    
     public void createTransactionData(Date date)
     {
 
