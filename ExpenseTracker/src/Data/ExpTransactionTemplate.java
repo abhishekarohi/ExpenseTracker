@@ -55,4 +55,11 @@ public class ExpTransactionTemplate implements Serializable
 	    		else
 	    			return false;
 	    }
+	    
+	    public void setTemplate(String i, String a, String c)
+	    {
+	    		templateItem = i;
+	    		templatepAmount = a;
+	    		templateCategory = c;
+	    }
 }

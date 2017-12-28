@@ -38,15 +38,18 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
     private JButton eSave = new JButton("Save");
     private JButton eCancel = new JButton("Cancel");
     private ButtonGroup bg = new ButtonGroup();
+    private ButtonGroup tBG = new ButtonGroup();
 
     private ExpTrkScreenDetails screenDetails = new ExpTrkScreenDetails();
-    private Dimension fSize = new Dimension(600,300);
+    private Dimension fSize = new Dimension(600,350);
 
     private JRadioButton daily = new JRadioButton("Daily");
     private JRadioButton weekly = new JRadioButton("Weekly");
     private JRadioButton biWeekly = new JRadioButton("Bi-Weekly");
     private JRadioButton monthly = new JRadioButton("Monthly");
     private JRadioButton yearly = new JRadioButton("Yearly");
+    private JRadioButton drTransaction = new JRadioButton("Debit");
+    private JRadioButton crTransaction = new JRadioButton("Credit");
     private JTextField freqencyText = new JTextField(5);
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -119,6 +122,8 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
             eStatusText.setEnabled(false);
             eDateText.setEnabled(false);
             eCategory.setEnabled(false);
+            drTransaction.setEnabled(false);
+            crTransaction.setEnabled(false);
         }
         eSave.setFont(boldFont);
         eCancel.setFont(boldFont);
@@ -128,6 +133,7 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
 
 
         //Create a panel for putting all the data on screen
+        JPanel tranType = new JPanel();
         JPanel tempPanel = new JPanel();
         JPanel tranPanel = new JPanel();
         JPanel tranPanel1 = new JPanel();
@@ -135,13 +141,29 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
         JPanel freqButtonPanel = new JPanel();
         JPanel addMorePanel = new JPanel();
 
+        tranType.setLayout(new GridBagLayout());
         tempPanel.setLayout(new GridBagLayout());
         tranPanel.setLayout(new GridBagLayout());
         tranPanel1.setLayout(new GridBagLayout());
         buttonPanel.setLayout(new GridBagLayout());
+        tranType.setBorder(BorderFactory.createEtchedBorder());
         freqButtonPanel.setBorder(BorderFactory.createEtchedBorder());
 
         GridBagConstraints c = new GridBagConstraints();
+        
+        tBG.add(crTransaction);
+        tBG.add(drTransaction);
+        drTransaction.setSelected(true);
+        
+        c.gridx = 0;
+        c.gridy = 0;
+        c.ipadx = 50;
+        tranType.add(drTransaction,c);
+        
+        c.gridx = 1;
+        c.gridy = 0;
+        c.ipadx = 50;
+        tranType.add(crTransaction,c);
         
         if (action.toUpperCase().contains("ADD"))
         {
@@ -277,41 +299,47 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
         addMorePanel.add(addMore);
 
         //Set the default properties of the frame and add the panel
+        
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.LINE_START;
+        add(tranType,c);
+        
         if (action.toUpperCase().contains("ADD"))
         {
         		c.gridx = 0;
-            c.gridy = 0;
+            c.gridy = 1;
             c.ipadx = 0;
             c.anchor = GridBagConstraints.FIRST_LINE_START;
             add(tempPanel,c);
-       }
+        }
         
         c.gridx = 0;
-        c.gridy = 1;
+        c.gridy = 2;
         c.ipadx = 0;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         add(tranPanel1,c);
 
         c.gridx = 0;
-        c.gridy = 2;
+        c.gridy = 3;
         c.anchor = GridBagConstraints.LINE_START;
         add(tranPanel,c);
 
         if (action.equals("Add Recurring"))
         {
             c.gridx = 0;
-            c.gridy = 6;
+            c.gridy = 7;
             add(freqButtonPanel,c);
         }
 
         c.gridx = 0;
-        c.gridy = 7;
+        c.gridy = 8;
         c.anchor = GridBagConstraints.CENTER;
         add(buttonPanel,c);
 
         if (action.equals("Add New"))
         {
-            c.gridy = 8;
+            c.gridy = 9;
             add(addMorePanel,c);
         }
 
@@ -349,6 +377,17 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
         else if (action.equals("Complete With Diff"))
             eStatusText.setSelectedItem("Completed");
 
+        String plannedAmount = ePlannedAmountText.getText();
+        
+        
+        if (plannedAmount.contains("-"))
+        {
+        		ePlannedAmountText.setText(plannedAmount.substring(1,plannedAmount.length()));
+        		drTransaction.setSelected(true);
+        }	
+        else
+        		crTransaction.setSelected(true);	
+        
     }
 
     public void resetAllFields()
@@ -421,6 +460,13 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
     {
 
         tranData = new JsonObject();
+        String plannedAmount = ePlannedAmountText.getText();
+        
+        if (drTransaction.isSelected() && !plannedAmount.contains("-"))
+        		ePlannedAmountText.setText("-" + plannedAmount);
+        else if (crTransaction.isSelected() && plannedAmount.contains("-"))
+        		ePlannedAmountText.setText(plannedAmount.substring(1,plannedAmount.length()));
+        
         tranData.add("Item",new JsonPrimitive(eDescText.getText()));
         tranData.add("Category", new JsonPrimitive(eCategory.getSelectedItem().toString()));
         tranData.add("Date", new JsonPrimitive(format.format(date)));
@@ -446,9 +492,20 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
         return userAction;
     }
 
+    
     public void verifyTemplateSave()
     {
-    		if (!eDescText.getText().equals(tTemplate.getSelectedItem().toString()))
+    		int index = tTemplate.getSelectedIndex();
+    		String selectedTemplate = tTemplate.getSelectedItem().toString();
+    		String templateAmount = ePlannedAmountText.getText();
+    		
+    		if (drTransaction.isSelected() && !templateAmount.startsWith("-"))
+    			templateAmount = "-" + templateAmount;
+    		else if (crTransaction.isSelected() && templateAmount.startsWith("-"))
+    			templateAmount = templateAmount.substring(1);
+    		
+    		
+    		if (!eDescText.getText().equals(selectedTemplate))
     		{
     			int n = JOptionPane.showConfirmDialog(
     				    this,
@@ -462,10 +519,29 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
     			}
     			
     		}
+    		else
+    		{
+    			ExpTransactionTemplate t = parent.getTemplates().get(index);
+    			if (!t.getTemplateAmount().equals(templateAmount) ||
+    				!t.getTemplateCategory().equals(eCategory.getSelectedItem().toString()))
+    			{
+    				int n = JOptionPane.showConfirmDialog(
+        				    this,
+        				    "Would you like to update transaction template?",
+        				    "Template Update",
+        				    JOptionPane.YES_NO_OPTION);
+	    			if (n == JOptionPane.YES_OPTION)
+	    			{
+	    				parent.updateTemplatesDAO(index-1,eDescText.getText(),templateAmount,eCategory.getSelectedItem().toString());
+	    			}
+    			}
+    		}
     }
     public void performActions()
     {
-    		verifyTemplateSave();
+    		if (mode.toUpperCase().contains("ADD"))
+    			verifyTemplateSave();
+    		
     		setVisible(false);
         if (mode.equals("Add New") || mode.equals("Add Recurring"))
         {
@@ -545,12 +621,25 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
     public void copyFromTemplate()
     {
     		int index = tTemplate.getSelectedIndex();
+    		String plannedAmount;
     		if (index > 0)
     		{
+    			
     			ExpTransactionTemplate t = parent.getTemplates().get(index-1);
-    			eDescText.setText(t.getTemplateItem());
-    			ePlannedAmountText.setText(t.getTemplateAmount());
+    			plannedAmount = t.getTemplateAmount();
+    			eDescText.setText(t.getTemplateItem());		
     			eCategory.setSelectedItem(t.getTemplateCategory());
+    			 if (plannedAmount.startsWith("-"))
+    			 {
+    				 drTransaction.setSelected(true);
+    				 ePlannedAmountText.setText(plannedAmount.substring(1));
+    			 } 
+    			 else 
+    			 {
+    				 crTransaction.setSelected(true);  
+    				 ePlannedAmountText.setText(plannedAmount);
+    			 }
+    				 		
     		}
     		else
     		{
@@ -559,6 +648,7 @@ public class ExpTrkExpenseDialog extends JDialog implements ActionListener
 		
     }
 
+    
     public void actionPerformed(ActionEvent e) {
             if(e.getActionCommand().equals("Cancel"))
             {

@@ -70,6 +70,14 @@ public class ExpTransactionTemplateDAO
 		templatesExist = true;
 	}
 	
+	public void updateTemplates(int templateid, String i, String amt, String cat)
+	{
+		
+		transactionTemplates.get(templateid).setTemplate(i, amt, cat);
+		sortdata();
+		templatesExist = true;
+	}
+	
 	public ArrayList<ExpTransactionTemplate> getTemplates()
 	{
 		return transactionTemplates;

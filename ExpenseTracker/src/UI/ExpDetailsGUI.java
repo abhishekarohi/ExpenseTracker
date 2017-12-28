@@ -991,6 +991,11 @@ public class ExpDetailsGUI extends JFrame implements ActionListener {
     {
     		expTemplateDAO.addToTemplates(item,amount,category);
     }
+    
+    public void updateTemplatesDAO(int id, String item, String amount, String category)
+    {
+    		expTemplateDAO.updateTemplates(id, item,amount,category);
+    }
     public String getCurrentMonth() {
 
         String tDate;
