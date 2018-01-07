@@ -521,8 +521,8 @@ public class ExpDetailsGUI extends JFrame implements ActionListener {
 
             cP.gridx = 0;
             cP.gridy = 1;
-            ExpBudgetBarChart barChart2 = new ExpBudgetBarChart((expDetailsDAO.monthBudgetReport(currMonth)), "Budget Summary");
-            chartPanel.add(barChart2,cP);
+            //ExpBudgetBarChart barChart2 = new ExpBudgetBarChart((expDetailsDAO.monthBudgetReport(currMonth)), "Budget Summary");
+            //chartPanel.add(barChart2,cP);
         }
 
 
